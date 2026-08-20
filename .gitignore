@@ -1,0 +1,6 @@
+.vscode/
+node_modules/
+*.txt
+*.md
+proposed-changes.md
+SITE-ANALYSIS.md
