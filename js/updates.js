@@ -93,7 +93,7 @@ function renderCard(u) {
             <h3 class="upd-card-title">${esc(u.title)}</h3>
             ${u.short_description ? `<p class="upd-card-desc">${esc(u.short_description)}</p>` : ''}
             <a class="upd-readmore" href="/update-details?slug=${encodeURIComponent(u.slug)}">
-                Read More <i class="fas fa-arrow-right"></i>
+                Read about ${esc(u.title)} <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </article>`;
