@@ -106,68 +106,43 @@ if (typeof supabaseClient === 'undefined' || !supabaseClient) {
 
 // Form Submission Logic
 document.addEventListener('DOMContentLoaded', () => {
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxeAiDOHK-9Uttsflyqgp89BcGFwkOSVsMpLmqqvZa4cWJ5bs2QOSi2ezllRdjQ1DcK/exec';
+
     const leadForm = document.getElementById('lead-form');
     const formMessage = document.getElementById('form-message');
-    
+
     if (leadForm) {
         const submitBtn = leadForm.querySelector('button[type="submit"]');
 
         leadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if (!supabaseClient) {
-                formMessage.innerText = 'System error: Database client not initialized.';
-                formMessage.className = 'form-message error';
-                return;
-            }
 
-            // Set loading state
             submitBtn.disabled = true;
             const originalBtnText = submitBtn.innerText;
             submitBtn.innerText = 'Sending...';
             formMessage.innerText = '';
             formMessage.className = 'form-message';
 
-            // Get form data
             const formData = new FormData(leadForm);
             const data = {};
-            formData.forEach((value, key) => {
-                if (value) data[key] = value;
-            });
-
-            console.log('Attempting to submit to Supabase:', data);
+            formData.forEach((value, key) => { if (value) data[key] = value; });
 
             try {
-                const { data: responseData, error } = await supabaseClient
-                    .from('leads')
-                    .insert([data]);
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
 
-                if (error) {
-                    console.error('Supabase Insert Error:', error);
-                    throw error;
-                }
+                if (!result.success) throw new Error(result.error || 'Submission failed');
 
-                console.log('Submission successful:', responseData);
-
-                // Success
                 formMessage.innerText = "Thank you for choosing Labourites. We'll get back to you shortly!";
                 formMessage.className = 'form-message success';
                 leadForm.reset();
-            } catch (error) {
-                // Detailed Error
-                console.error('Full Error Object:', error);
-                
-                let errorMsg = 'Oops! Something went wrong.';
-                if (error.code === '42501') {
-                    errorMsg = 'Permission denied (RLS). Please enable INSERT policies for the anon role in Supabase.';
-                } else if (error.message) {
-                    errorMsg = `Error: ${error.message}`;
-                }
-                
-                formMessage.innerText = errorMsg;
+            } catch (err) {
+                formMessage.innerText = 'Oops! Something went wrong. Please try again or call us directly.';
                 formMessage.className = 'form-message error';
             } finally {
-                // Reset button
                 submitBtn.disabled = false;
                 submitBtn.innerText = originalBtnText;
             }
