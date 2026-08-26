@@ -82,9 +82,14 @@
         </div>
     </nav>
 
-    <!-- Single Update -->
+    <!-- Redirect to static event page -->
     <article class="update-detail-wrap">
-        <div id="update-detail"></div>
+        <script>
+        (function () {
+            var slug = new URLSearchParams(window.location.search).get('slug');
+            window.location.replace(slug ? '/events/' + slug : '/events-updates');
+        })();
+        </script>
     </article>
 
     <!-- Footer -->

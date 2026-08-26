@@ -3,5 +3,6 @@ node_modules/
 *.txt
 !robots.txt
 *.md
+_event-template.html
 proposed-changes.md
 SITE-ANALYSIS.md
