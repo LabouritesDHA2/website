@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(leadForm);
             const data = {};
             formData.forEach((value, key) => { if (value) data[key] = value; });
+            data._token = 'lb-frm-9xQp2026';
 
             try {
                 const res = await fetch(APPS_SCRIPT_URL, {
